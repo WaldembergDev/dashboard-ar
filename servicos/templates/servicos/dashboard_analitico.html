@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Dashboard de Análise de Ar</h2>
+        <form class="d-flex gap-2">
+            <input type="date" name="data_inicio" class="form-control" value="{{ filtros.data_inicio }}">
+            <input type="date" name="data_fim" class="form-control" value="{{ filtros.data_fim }}">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-primary border-4">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small">Clientes Ativos (Período)</h6>
+                    <h2 class="mb-0 fw-bold text-primary">{{ kpis.clientes_ativos }}</h2>
+                    <small class="text-muted">Empresas distintas solicitaram análise</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-success border-4">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small">Total de Amostras</h6>
+                    <h2 class="mb-0 fw-bold text-success">{{ kpis.total_amostras }}</h2>
+                    <small class="text-muted">Recebidas no período</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-info border-4">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small">Média / Cliente</h6>
+                    <h2 class="mb-0 fw-bold text-info">{{ kpis.media_por_cliente }}</h2>
+                    <small class="text-muted">Amostras por solicitação</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-start border-warning border-4">
+                <div class="card-body">
+                    <h6 class="text-muted text-uppercase small">Faturamento Estimado</h6>
+                    <h2 class="mb-0 fw-bold text-warning">R$ {{ kpis.faturamento }}</h2>
+                    <small class="text-muted">Total de OS no período</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold">Evolução de Entrada de Amostras</div>
+                <div class="card-body">
+                    <canvas id="chartEvolucao"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold">Top 5 Clientes (Volume)</div>
+                <div class="card-body">
+                    <canvas id="chartTopClientes"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 1. Gráfico de Evolução
+    const ctxEvolucao = document.getElementById('chartEvolucao').getContext('2d');
+    new Chart(ctxEvolucao, {
+        type: 'line',
+        data: {
+            labels: {{ graficos.evolucao_labels|safe }},
+            datasets: [{
+                label: 'Amostras',
+                data: {{ graficos.evolucao_data|safe }},
+                borderColor: '#0d6efd', // Cor Azul Bootstrap
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                fill: true,
+                tension: 0.3 // Curva suave na linha
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // 2. Gráfico Top Clientes
+    const ctxClientes = document.getElementById('chartTopClientes').getContext('2d');
+    new Chart(ctxClientes, {
+        type: 'bar', // Pode mudar para 'doughnut' se preferir pizza
+        data: {
+            labels: {{ graficos.top_clientes_labels|safe }},
+            datasets: [{
+                label: 'Volume de Amostras',
+                data: {{ graficos.top_clientes_data|safe }},
+                backgroundColor: [
+                    '#198754', // Verde
+                    '#20c997', 
+                    '#0dcaf0', 
+                    '#ffc107', 
+                    '#6c757d'
+                ],
+                borderRadius: 5
+            }]
+        },
+        options: {
+            indexAxis: 'y', // Barra horizontal (fica melhor para ler nomes de clientes)
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+</script>
+{% endblock %}
