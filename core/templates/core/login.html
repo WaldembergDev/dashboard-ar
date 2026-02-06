@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | QualityWeb</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <style>
+        body {
+            background-color: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            max-width: 400px;
+            width: 100%;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .login-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .btn-login {
+            padding: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card card">
+        <div class="login-header">
+            <div class="mb-2">
+                <span class="material-symbols-outlined" style="font-size: 48px;">admin_panel_settings</span>
+            </div>
+            <h4 class="mb-0 fw-bold">QualityWeb</h4>
+            <p class="mb-0 opacity-75 small">Acesso Restrito</p>
+        </div>
+        
+        <div class="card-body p-4">
+            
+            {% if form.errors %}
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <span class="material-symbols-outlined me-2">error</span>
+                    <div>Usuário ou senha incorretos.</div>
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="id_username" class="form-label text-muted small fw-bold">USUÁRIO</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><span class="material-symbols-outlined text-muted" style="font-size: 20px;">person</span></span>
+                        {{ form.username }}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="id_password" class="form-label text-muted small fw-bold">SENHA</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><span class="material-symbols-outlined text-muted" style="font-size: 20px;">lock</span></span>
+                        {{ form.password }}
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-login shadow-sm">
+                        ENTRAR
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer bg-white border-0 text-center py-3">
+            <small class="text-muted">© {% now "Y" %} Grupo Quality Ambiental</small>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

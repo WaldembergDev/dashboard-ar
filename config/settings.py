@@ -123,3 +123,11 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # definindo o usuário
 AUTH_USER_MODEL = 'core.CustomUser'
+
+LOGIN_REDIRECT_URL = 'dashboard_analitico'
+
+# Para onde vai depois de sair
+LOGOUT_REDIRECT_URL = 'login'
+
+# URL da página de login
+LOGIN_URL = 'login'
