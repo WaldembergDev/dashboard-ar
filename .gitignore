@@ -8,3 +8,9 @@ wheels/
 
 # Virtual environments
 .venv
+
+# removendo arquivos db.sqlite3
+*.sqlite3
+
+# variaveis de ambiente
+.env
