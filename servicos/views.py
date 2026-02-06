@@ -16,7 +16,6 @@ from .models import Amostra, OrdemServico
 import calendar
 
 def dashboard_analitico(request):
-    # 1. Filtro de Mês/Ano
     mes_inicio_str = request.GET.get('mes_inicio')
     mes_fim_str = request.GET.get('mes_fim')
     
@@ -29,7 +28,6 @@ def dashboard_analitico(request):
     if not mes_fim_str:
         mes_fim_str = hoje.strftime('%Y-%m')
 
-    # 2. Converte para datas
     ano_ini, mes_ini = map(int, mes_inicio_str.split('-'))
     data_inicio_filtro = datetime(ano_ini, mes_ini, 1).date()
 
@@ -37,7 +35,6 @@ def dashboard_analitico(request):
     ultimo_dia = calendar.monthrange(ano_fim, mes_fim)[1] 
     data_fim_filtro = datetime(ano_fim, mes_fim, ultimo_dia).date()
 
-    # 3. QuerySets
     os_filtradas = OrdemServico.objects.filter(
         data_entrada__range=[data_inicio_filtro, data_fim_filtro]
     )
@@ -46,20 +43,14 @@ def dashboard_analitico(request):
         ordem_servico__in=os_filtradas
     )
 
-    # --- KPI 1: Clientes Ativos ---
     qtd_clientes_ativos = os_filtradas.values('cliente').distinct().count()
 
-    # --- KPI 2: Total de Amostras ---
     total_amostras = amostras_filtradas.count()
 
-    # --- KPI 3: Média de Amostras por Cliente ---
     media_amostras_cliente = 0
     if qtd_clientes_ativos > 0:
         media_amostras_cliente = total_amostras / qtd_clientes_ativos
 
-    # (KPI 4 REMOVIDO DAQUI)
-
-    # --- GRÁFICO 1: Evolução Mensal ---
     evolucao_mensal = amostras_filtradas.annotate(
         mes=TruncMonth('ordem_servico__data_entrada')
     ).values('mes').annotate(
@@ -73,7 +64,6 @@ def dashboard_analitico(request):
             labels_evolucao.append(item['mes'].strftime('%b/%Y'))
             data_evolucao.append(item['total'])
 
-    # --- GRÁFICO 2: Top 5 Clientes ---
     top_clientes = amostras_filtradas.values(
         'ordem_servico__cliente__nome'
     ).annotate(
@@ -88,7 +78,6 @@ def dashboard_analitico(request):
             'clientes_ativos': qtd_clientes_ativos,
             'total_amostras': total_amostras,
             'media_por_cliente': round(media_amostras_cliente, 1),
-            # 'faturamento': REMOVIDO
         },
         'graficos': {
             'evolucao_labels': labels_evolucao,
@@ -111,7 +100,6 @@ def upload_planilha(request):
             arquivo = request.FILES['arquivo']
             
             try:
-                # Lê o arquivo com Pandas
                 if arquivo.name.endswith('.csv'):
                     df = pd.read_csv(arquivo)
                 else:
@@ -124,19 +112,16 @@ def upload_planilha(request):
                 count_salvos = 0
                 
                 for index, row in df.iterrows():
-                    # Tenta pegar ou criar o Cliente
                     cliente_obj, _ = Entidade.objects.get_or_create(
                         nome=row['Cliente'],
                         defaults={'eh_cliente': True}
                     )
 
-                    # Tenta pegar ou criar o Solicitante
                     solicitante_obj, _ = Entidade.objects.get_or_create(
                         nome=row['Solicitante'],
                         defaults={'eh_cliente': True}
                     )
 
-                    # Tenta pegar ou criar a OS
                     os_obj, _ = OrdemServico.objects.get_or_create(
                         numero=row['Ordem de serviço'],
                         defaults={
