@@ -13,7 +13,11 @@ ALLOWED_HOSTS = ['tigrupoquality.pythonanywhere.com']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('ENGINE_DB'),
+        'NAME': os.getenv('NAME_DB'),
+        'USER': os.getenv('USER_DB'),
+        'PASSWORD': os.getenv('PASSWORD_DB'),
+        'HOST': os.getenv('HOST_DB'),
+        'PORT': os.getenv('PORT_DB'),
     }
 }
