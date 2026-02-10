@@ -11,7 +11,7 @@ class OrdemServico(models.Model):
     data_entrada = models.DateField(verbose_name='Data de Entrada')
     numero = models.CharField(max_length=25, unique=True)
     preco = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
-    status = models.CharField(verbose_name='Status', choices=Status.choices, default=Status.ANDAMENTO)
+    status = models.CharField(verbose_name='Status', max_length=12, choices=Status.choices, default=Status.ANDAMENTO)
     solicitante = models.ForeignKey(Entidade, on_delete=models.PROTECT, related_name='ordens_solicitadas')
     cliente = models.ForeignKey(Entidade, on_delete=models.PROTECT, related_name='ordens_cliente')
 
