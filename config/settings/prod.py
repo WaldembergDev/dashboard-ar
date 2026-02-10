@@ -6,7 +6,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tigrupoquality.pythonanywhere.com']
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
