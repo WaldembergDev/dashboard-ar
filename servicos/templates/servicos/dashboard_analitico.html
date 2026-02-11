@@ -11,7 +11,7 @@
             <p class="text-body-secondary mb-0 small">Visão geral das amostras</p>
         </div>
         
-        <form class="d-flex gap-2 flex-wrap">
+        <form class="d-flex gap-2 flex-wrap" action="." method="GET">
             <div class="input-group input-group-sm">
                 <span class="input-group-text"><i class="bi bi-calendar-month"></i></span>
                 <input type="month" name="mes_inicio" class="form-control" value="{{ filtros.mes_inicio }}" required>
@@ -21,9 +21,14 @@
                 <span class="input-group-text"><i class="bi bi-calendar-month"></i></span>
                 <input type="month" name="mes_fim" class="form-control" value="{{ filtros.mes_fim }}" required>
             </div>
-            <button type="submit" class="btn btn-primary btn-sm">
+            
+            <button type="submit" class="btn btn-primary btn-sm" title="Aplicar Filtro">
                 <i class="bi bi-funnel me-1"></i>Filtrar
             </button>
+
+            <a href="{% url 'dashboard_analitico' %}" class="btn btn-outline-secondary btn-sm" title="Restaurar padrão">
+                <i class="bi bi-x-circle me-1"></i>Limpar
+            </a>
         </form>
     </div>
 
