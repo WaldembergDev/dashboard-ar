@@ -11,10 +11,11 @@ from django.db.models import Count, Sum, Avg, F
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
 from datetime import timedelta, datetime
-from .models import Amostra, OrdemServico
 import calendar
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def dashboard_analitico(request):
     mes_inicio_str = request.GET.get('mes_inicio')
     mes_fim_str = request.GET.get('mes_fim')
@@ -95,6 +96,8 @@ def dashboard_analitico(request):
     
     return render(request, 'servicos/dashboard_analitico.html', context)
 
+
+@login_required
 def upload_planilha(request):
     if request.method == 'POST':
         form = UploadPlanilhaForm(request.POST, request.FILES)
